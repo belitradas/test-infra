@@ -1,7 +1,23 @@
 plugins:
   belitradas/test-infra:
   - config-updater
-  - size
+  belitradas:
+    - approve  # Allow OWNERS to /approve
+    - assign  # Allow /assign and /cc
+    - blunderbuss  # Auto-assign people
+    - cat # /meow replies with cat pictures
+    - dog # /bark replies with dog pictures
+    - help  # Support /help and /good-first-issue
+    - hold  # Support /hold to delay merge
+    - lgtm  # Allow /lgtm
+    - lifecycle  # Allow /lifecycle stale
+    - override
+    - size  # Auto-label size of PR
+    - trigger  # Allow people to configure CI jobs to /test
+    - verify-owners # Validates OWNERS file changes in PRs.
+    - wip  # Auto-hold PRs with WIP in title
+    - yuks # Let prow tell a /joke
+
 config_updater:
   maps:
     prow/config.yaml:
@@ -11,3 +27,21 @@ config_updater:
     config/jobs/**/*.yaml:
       name: job-config
       gzip: true
+
+triggers:
+- repos:
+  - belitradas
+
+approve:
+- repos:
+  - belitradas
+  require_self_approval: false
+  lgtm_acts_as_approve: true
+
+lgtm:
+- repos:
+  - belitradas
+  review_acts_as_lgtm: true
+
+
+  
