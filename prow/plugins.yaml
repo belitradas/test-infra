@@ -1,0 +1,13 @@
+plugins:
+  belitradas/test-infra:
+  - config-updater
+  - size
+config_updater:
+  maps:
+    prow/config.yaml:
+      name: config
+    prow/plugins.yaml:
+      name: plugin
+    config/jobs/**/*.yaml:
+      name: job-config
+      gzip: true
