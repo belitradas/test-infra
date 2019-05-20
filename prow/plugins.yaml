@@ -23,7 +23,7 @@ config_updater:
     prow/config.yaml:
       name: config
     prow/plugins.yaml:
-      name: plugin
+      name: plugins
     config/jobs/**/*.yaml:
       name: job-config
       gzip: true
