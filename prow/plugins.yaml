@@ -54,6 +54,10 @@ external_plugins:
   - name: needs-rebase
     events:
       - pull_request
+  belitradas/test-infra:
+  - name: needs-rebase
+    events:
+      - pull_request
 
 welcome:
 - repos:
