@@ -19,3 +19,37 @@ plank:
       bucket: "belitradas-prow-artifacts"
       path_strategy: "explicit"
     gcs_credentials_secret: gcs-credentials
+
+sinker:
+  resync_period: 1m
+  max_prowjob_age: 48h
+  max_pod_age: 30m
+
+tide:
+  sync_period: 2m
+  merge_method:
+    belitradas: squash
+    belitradas/infra-test: squash
+  pr_status_base_url: https://prow.coolcluster.belitre.com/pr
+  blocker_label: tide/merge-blocker
+  squash_label: tide/merge-method-squash
+  rebase_label: tide/merge-method-rebase
+  merge_label: tide/merge-method-merge
+  context_options:
+    orgs:
+     kubernetes:
+      repos:
+        dashboard:
+          skip-unknown-contexts: true
+          from-branch-protection: true
+  queries:
+  - orgs:
+    - belitradas
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/work-in-progress
+    - needs-rebase
