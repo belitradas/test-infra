@@ -17,6 +17,11 @@ plugins:
     - verify-owners # Validates OWNERS file changes in PRs.
     - wip  # Auto-hold PRs with WIP in title
     - yuks # Let prow tell a /joke
+    - branchcleaner
+    - pony
+    - shrug
+    - skip
+    - welcome
 
 config_updater:
   maps:
