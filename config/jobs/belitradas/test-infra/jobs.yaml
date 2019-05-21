@@ -29,7 +29,7 @@
             - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
             - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
             command:
-            - ./scripts/validate-config.sh
+            - ./prow/scripts/validate-config.sh
             image: launcher.gcr.io/google/bazel:0.24.1
             name: "test-config"
             resources: {}
