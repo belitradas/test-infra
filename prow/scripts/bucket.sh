@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BUCKET_NAME=belitradas-prow-artifacts
 

@@ -17,10 +17,23 @@ presubmits:
     max_concurrency: 2       # As for postsubmits.
     trigger: "(?m)tests( please)?" # Regexp, see discussion.
     rerun_command: "tests"  
+    clone_uri: "https://github.com/kubernetes/test-infra"
+    extra_refs:
+    - base_ref: master
+      org: belitradas
+      repo: test-infra
     spec: 
       containers:
-      - image: alpine
-        command: ["/bin/date"]
+      - args:
+        - run
+        - --
+        - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
+        - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
+        command:
+        - - ./hack/bazel.sh
+        image: launcher.gcr.io/google/bazel:0.24.1
+        name: "test-config"
+        resources: {}
 
 postsubmits:
   belitradas/test-infra:
