@@ -26,7 +26,7 @@ sinker:
   max_pod_age: 30m
 
 tide:
-  sync_period: 2m
+  sync_period: 1m
   merge_method:
     belitradas: squash
     belitradas/test-infra: squash
