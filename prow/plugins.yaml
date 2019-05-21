@@ -48,13 +48,8 @@ lgtm:
   - belitradas
   review_acts_as_lgtm: true
 
-
 external_plugins:
   belitradas:
-  - name: needs-rebase
-    events:
-      - pull_request
-  belitradas/test-infra:
   - name: needs-rebase
     events:
       - pull_request
