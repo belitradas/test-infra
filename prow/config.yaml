@@ -59,6 +59,7 @@ tide:
     - do-not-merge/hold
     - do-not-merge/work-in-progress
     - needs-rebase
+    - do-not-merge/invalid-owners-file
 
 #branch-protection:
 #  allow_disabled_policies: true

@@ -1,0 +1,66 @@
+apiVersion: v1
+data:
+  config.yaml: |-
+    prowjob_namespace: default
+    pod_namespace: test-pods
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: default
+---
+apiVersion: v1
+data:
+  plugins.yaml: |-
+    plugins:
+      belitradas/test-infra:
+      - config-updater
+    config_updater:
+      maps:
+        prow/config.yaml:
+          name: config
+        prow/plugins.yaml:
+          name: plugins
+        config/jobs/**/*.yaml:
+          name: job-config
+          gzip: true
+kind: ConfigMap
+metadata:
+  name: plugins
+  namespace: default
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  namespace: default
+  name: gce-ssd-retain
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+reclaimPolicy: Retain
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: default
+  labels:
+    app: ghproxy
+  name: ghproxy
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: gce-ssd-retain
+  # gce-ssd-retain is specified in prow/cluster/gce-ssd-retain_storageclass.yaml
+  #
+  # If you are setting up your own Prow instance you can do any of the following:
+  # 1) Delete this to use the default storage class for your cluster.
+  # 2) Specify your own storage class.
+  # 3) If you are using GKE you can use the gce-ssd-retain storage class. It can be
+  #    created with: `kubectl create -f prow/cluster/gce-ssd-retain_storageclass.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-pods
