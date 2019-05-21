@@ -12,15 +12,11 @@ presubmits:
   - name: test            # As for periodics.
     decorate: true           # As for periodics.
     always_run: false         # Run for every PR, or only when requested.
-    run_if_changed: "qux/.*" # Regexp, only run on certain changed files.
     skip_report: true        # Whether to skip setting a status on GitHub.
     max_concurrency: 2       # As for postsubmits.
     skip_branches: 
     - ^master$
     spec: 
       containers:
-      - image: launcher.gcr.io/google/bazel
-        command:
-        - echo
-        args:
-        - "test"
+      - image: alpine
+        command: ["/bin/date"]
