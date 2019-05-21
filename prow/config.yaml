@@ -45,7 +45,7 @@ tide:
 #      required-contexts:
 #        - tide
 #      repos:
-#        infra-test:
+#        test-infra:
 #          skip-unknown-contexts: true
 #          from-branch-protection: true
   queries:
@@ -63,7 +63,7 @@ tide:
 branch-protection:
   orgs:
     belitradas:
-      infra-test:
+      test-infra:
         branches:
           master:
             # Protect the master branch (overrides inhereted parent setting of false)
