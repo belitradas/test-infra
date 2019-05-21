@@ -1,3 +1,3 @@
 # Belitradas test-infra
 
-Here will be dragons... blah!
+Here will be dragons...
