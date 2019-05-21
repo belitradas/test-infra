@@ -11,10 +11,19 @@ presubmits:
   belitradas/test-infra:
   - name: test            # As for periodics.
     decorate: true           # As for periodics.
-    always_run: false         # Run for every PR, or only when requested.
-    skip_report: true        # Whether to skip setting a status on GitHub.
+    always_run: true         # Run for every PR, or only when requested.
+    skip_report: false        # Whether to skip setting a status on GitHub.
     max_concurrency: 2       # As for postsubmits.
     spec: 
       containers:
       - image: alpine
         command: ["/bin/date"]
+
+postsubmits:
+  belitradas/test-infra:
+  - name: test-postsubmit
+    decorate: true
+    spec:
+      containers:
+      - image: alpine
+        command: ["/bin/printenv"]
