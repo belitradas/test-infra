@@ -7,41 +7,43 @@
 #    - image: alpine
 #      command: ["/bin/date"]
       
-presubmits:
-  belitradas/test-infra:
-  - name: tests           # As for periodics.
-    context: tests
-    decorate: true           # As for periodics.
-    always_run: true         # Run for every PR, or only when requested.
-    skip_report: false        # Whether to skip setting a status on GitHub.
-    max_concurrency: 2       # As for postsubmits.
-    trigger: "(?m)tests( please)?" # Regexp, see discussion.
-    rerun_command: "tests"  
-    clone_uri: "https://github.com/kubernetes/test-infra"
-    extra_refs:
-    - base_ref: master
-      org: belitradas
-      repo: test-infra
-    spec: 
-      containers:
-      - args:
-        - run
-        - --
-        - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
-        - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
-        command:
-        - - ./hack/bazel.sh
-        image: launcher.gcr.io/google/bazel:0.24.1
-        name: "test-config"
-        resources: {}
+    presubmits:
+      belitradas/test-infra:
+      - name: tests           # As for periodics.
+        context: tests
+        decorate: true           # As for periodics.
+        always_run: true         # Run for every PR, or only when requested.
+        skip_report: false        # Whether to skip setting a status on GitHub.
+        max_concurrency: 2       # As for postsubmits.
+        trigger: "(?m)tests( please)?" # Regexp, see discussion.
+        rerun_command: "tests"  
+        extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: test-infra
+        spec: 
+          containers:
+          - args:
+            - run
+            - --
+            - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
+            - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
+            command:
+            - ./scripts/validate-config.sh
+            image: launcher.gcr.io/google/bazel:0.24.1
+            name: "test-config"
+            resources: {}
+            env:
+              - name: K8S_TEST_INFRA_PATH
+                value: "/home/prow/go/src/kubernetes/test-infra"
 
-postsubmits:
-  belitradas/test-infra:
-  - name: tests-postsubmit
-    decorate: true
-    branches:             # Regexps, only run against these branches.
-    - ^master$
-    spec:
-      containers:
-      - image: alpine
-        command: ["/bin/printenv"]
+    postsubmits:
+      belitradas/test-infra:
+      - name: tests-postsubmit
+        decorate: true
+        branches:             # Regexps, only run against these branches.
+        - ^master$
+        spec:
+          containers:
+          - image: alpine
+            command: ["/bin/printenv"]
