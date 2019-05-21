@@ -14,8 +14,6 @@ presubmits:
     always_run: false         # Run for every PR, or only when requested.
     skip_report: true        # Whether to skip setting a status on GitHub.
     max_concurrency: 2       # As for postsubmits.
-    skip_branches: 
-    - ^master$
     spec: 
       containers:
       - image: alpine
