@@ -29,7 +29,7 @@ tide:
   sync_period: 2m
   merge_method:
     belitradas: squash
-    belitradas/infra-test: squash
+    belitradas/test-infra: squash
   pr_status_base_url: https://prow.coolcluster.belitre.com/pr
   blocker_label: tide/merge-blocker
   squash_label: tide/merge-method-squash
