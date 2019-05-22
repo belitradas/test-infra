@@ -7,40 +7,40 @@
 #    - image: alpine
 #      command: ["/bin/date"]
       
-    presubmits:
-      belitradas/test-infra:
-      - name: tests           # As for periodics.
-        context: tests
-        decorate: true           # As for periodics.
-        always_run: true         # Run for every PR, or only when requested.
-        skip_report: false        # Whether to skip setting a status on GitHub.
-        max_concurrency: 2       # As for postsubmits.
-        trigger: "(?m)tests( please)?" # Regexp, see discussion.
-        rerun_command: "tests"  
-        extra_refs:
-        - base_ref: master
-          org: kubernetes
-          repo: test-infra
-        spec: 
-          containers:
-          - command:
-            - ./prow/scripts/validate-config.sh
-            image: launcher.gcr.io/google/bazel:0.24.1
-            name: "test-config"
-            resources: {}
-            env:
-              - name: K8S_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-              - name: MY_PATH
-                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+presubmits:
+  belitradas/test-infra:
+  - name: tests           # As for periodics.
+    context: tests
+    decorate: true           # As for periodics.
+    always_run: true         # Run for every PR, or only when requested.
+    skip_report: false        # Whether to skip setting a status on GitHub.
+    max_concurrency: 2       # As for postsubmits.
+    trigger: "(?m)tests( please)?" # Regexp, see discussion.
+    rerun_command: "tests"  
+    extra_refs:
+    - base_ref: master
+      org: kubernetes
+      repo: test-infra
+    spec: 
+      containers:
+      - command:
+        - ./prow/scripts/validate-config.sh
+        image: launcher.gcr.io/google/bazel:0.24.1
+        name: "test-config"
+        resources: {}
+        env:
+          - name: K8S_TEST_INFRA_PATH
+            value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+          - name: MY_PATH
+            value: "/home/prow/go/src/github.com/belitradas/test-infra"
 
-    postsubmits:
-      belitradas/test-infra:
-      - name: tests-postsubmit
-        decorate: true
-        branches:             # Regexps, only run against these branches.
-        - ^master$
-        spec:
-          containers:
-          - image: alpine
-            command: ["/bin/printenv"]
+postsubmits:
+  belitradas/test-infra:
+  - name: tests-postsubmit
+    decorate: true
+    branches:             # Regexps, only run against these branches.
+    - ^master$
+    spec:
+      containers:
+      - image: alpine
+        command: ["/bin/printenv"]
