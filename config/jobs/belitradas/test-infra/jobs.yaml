@@ -41,7 +41,7 @@ presubmits:
       trigger: "(?m)test-prow-manifests( please)?" 
       rerun_command: "test-prow-manifests"  
       spec: 
-        serviceAccount: prow
+        serviceAccountName: prow
         containers:
           - name: "test-manifests"
             command:
@@ -79,7 +79,7 @@ postsubmits:
       branches:
         - master
       spec: 
-        serviceAccount: prow 
+        serviceAccountName: prow
         containers:
           - name: "test-manifests"
             command:
