@@ -23,12 +23,7 @@
           repo: test-infra
         spec: 
           containers:
-          - args:
-            - run
-            - --
-            - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
-            - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
-            command:
+          - command:
             - ./prow/scripts/validate-config.sh
             image: launcher.gcr.io/google/bazel:0.24.1
             name: "test-config"
@@ -36,6 +31,8 @@
             env:
               - name: K8S_TEST_INFRA_PATH
                 value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+              - name: MY_PATH
+                value: "/home/prow/go/src/github.com/belitradas/test-infra"
 
     postsubmits:
       belitradas/test-infra:
