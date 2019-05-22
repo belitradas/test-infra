@@ -9,30 +9,45 @@
       
 presubmits:
   belitradas/test-infra:
-  - name: tests           # As for periodics.
-    context: tests
-    decorate: true           # As for periodics.
-    always_run: true         # Run for every PR, or only when requested.
-    skip_report: false        # Whether to skip setting a status on GitHub.
-    max_concurrency: 2       # As for postsubmits.
-    trigger: "(?m)tests( please)?" # Regexp, see discussion.
-    rerun_command: "tests"  
+  - name: test-prow-config
+    context: test-prow-config
+    decorate: true 
+    always_run: true 
+    skip_report: false 
+    max_concurrency: 1 
+    trigger: "(?m)test-prow-config( please)?" 
+    rerun_command: "test-prow-config"  
     extra_refs:
-    - base_ref: master
-      org: kubernetes
-      repo: test-infra
+      - base_ref: master
+        org: kubernetes
+        repo: test-infra
     spec: 
       containers:
-      - command:
-        - ./prow/scripts/validate-config.sh
-        image: launcher.gcr.io/google/bazel:0.24.1
-        name: "test-config"
-        resources: {}
-        env:
-          - name: K8S_TEST_INFRA_PATH
-            value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-          - name: MY_PATH
-            value: "/home/prow/go/src/github.com/belitradas/test-infra"
+        - name: "test-config"
+          command:
+            - ./prow/scripts/validate-config.sh
+          image: launcher.gcr.io/google/bazel:0.24.1
+          env:
+            - name: K8S_TEST_INFRA_PATH
+              value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+            - name: BELITRADAS_TEST_INFRA_PATH
+              value: "/home/prow/go/src/github.com/belitradas/test-infra"
+  - name: test-prow-manifests
+    context: test-prow-manifests
+    decorate: true 
+    always_run: false 
+    skip_report: true 
+    max_concurrency: 1 
+    trigger: "(?m)test-prow-manifests( please)?" 
+    rerun_command: "test-prow-manifests"  
+    spec: 
+      containers:
+        - name: "test-manifests"
+          command:
+            - make
+          args:
+            - deploy-prow-dry-run
+          image: belitre/kubectl:1.14.0
 
 postsubmits:
   belitradas/test-infra:
@@ -54,5 +69,5 @@ postsubmits:
         env:
           - name: K8S_TEST_INFRA_PATH
             value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-          - name: MY_PATH
+          - name: BELITRADAS_TEST_INFRA_PATH
             value: "/home/prow/go/src/github.com/belitradas/test-infra"
