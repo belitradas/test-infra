@@ -36,12 +36,12 @@ presubmits:
       context: test-prow-manifests
       decorate: true 
       always_run: true 
-      skip_report: false 
+      skip_report: true 
       max_concurrency: 1 
       trigger: "(?m)test-prow-manifests( please)?" 
       rerun_command: "test-prow-manifests"  
-      serviceAccount: prow
       spec: 
+        serviceAccount: prow
         containers:
           - name: "test-manifests"
             command:
@@ -52,10 +52,11 @@ presubmits:
 
 postsubmits:
   belitradas/test-infra:
-    - name: tests-postsubmit
+    - name: test-config-postsubmit
       decorate: true
+      max_concurrency: 1 
       branches:
-        - ^master$
+        - master
       extra_refs:
         - base_ref: master
           org: kubernetes
@@ -72,3 +73,17 @@ postsubmits:
                 value: "/home/prow/go/src/github.com/kubernetes/test-infra"
               - name: BELITRADAS_TEST_INFRA_PATH
                 value: "/home/prow/go/src/github.com/belitradas/test-infra"
+    - name: test-prow-manifests-postsubmit
+      decorate: true 
+      max_concurrency: 1 
+      branches:
+        - master
+      spec: 
+        serviceAccount: prow 
+        containers:
+          - name: "test-manifests"
+            command:
+              - make
+            args:
+              - deploy-prow
+            image: belitre/kubectl:1.14.2
