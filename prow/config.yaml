@@ -33,6 +33,7 @@ tide:
   merge_method:
     belitradas: squash
     belitradas/test-infra: squash
+    belitre/kctx-manager: squash
   pr_status_base_url: https://prow.coolcluster.belitre.com/pr
   blocker_label: tide/merge-blocker
   squash_label: tide/merge-method-squash
@@ -63,6 +64,22 @@ tide:
     - do-not-merge/work-in-progress
     - needs-rebase
     - do-not-merge/invalid-owners-file
+  - repos:
+    - belitre/kctx-manager
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/work-in-progress
+    - needs-rebase
+    - do-not-merge/invalid-owners-file
+
+github_reporter:
+  job_types_to_report:
+  - presubmit
+  - postsubmit
 
 #branch-protection:
 #  allow_disabled_policies: true
