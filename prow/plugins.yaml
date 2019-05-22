@@ -22,6 +22,7 @@ plugins:
     - shrug
     - skip
     - welcome
+    - heart
 
 config_updater:
   maps:
