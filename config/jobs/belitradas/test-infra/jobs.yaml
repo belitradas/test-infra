@@ -16,7 +16,8 @@ presubmits:
       skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-config( please)?" 
-      rerun_command: "test-prow-config"  
+      rerun_command: "test-prow-config"
+      run_if_changed: '^(config/.*|prow/.*)$'
       extra_refs:
         - base_ref: master
           org: kubernetes
@@ -39,7 +40,8 @@ presubmits:
       skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-manifests( please)?" 
-      rerun_command: "test-prow-manifests"  
+      rerun_command: "test-prow-manifests"
+      run_if_changed: 'prow/manifests/'
       spec: 
         serviceAccountName: prow
         containers:
@@ -55,6 +57,7 @@ postsubmits:
     - name: test-config-postsubmit
       decorate: true
       max_concurrency: 1 
+      run_if_changed: '^(config/.*|prow/.*)$'
       branches:
         - master
       extra_refs:
@@ -76,6 +79,7 @@ postsubmits:
     - name: test-prow-manifests-postsubmit
       decorate: true 
       max_concurrency: 1 
+      run_if_changed: 'prow/manifests/'
       branches:
         - master
       spec: 
