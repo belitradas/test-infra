@@ -1,3 +1,4 @@
 # Belitradas test-infra
 
-Here will be dragons... aaa
+Almost eveything in this repo is from https://github.com/kubernetes/test-infra :)
+

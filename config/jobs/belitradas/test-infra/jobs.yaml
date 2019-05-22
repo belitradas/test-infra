@@ -36,12 +36,12 @@ presubmits:
       context: test-prow-manifests
       decorate: true 
       always_run: true 
-      skip_report: true 
+      skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-manifests( please)?" 
       rerun_command: "test-prow-manifests"  
       spec: 
-        serviceAccount: prow
+        serviceAccountName: prow
         containers:
           - name: "test-manifests"
             command:
@@ -79,7 +79,7 @@ postsubmits:
       branches:
         - master
       spec: 
-        serviceAccount: prow 
+        serviceAccountName: prow
         containers:
           - name: "test-manifests"
             command:
