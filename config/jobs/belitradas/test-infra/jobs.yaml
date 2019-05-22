@@ -17,23 +17,22 @@ presubmits:
     max_concurrency: 2       # As for postsubmits.
     trigger: "(?m)tests( please)?" # Regexp, see discussion.
     rerun_command: "tests"  
-    clone_uri: "https://github.com/kubernetes/test-infra"
     extra_refs:
     - base_ref: master
-      org: belitradas
+      org: kubernetes
       repo: test-infra
     spec: 
       containers:
-      - args:
-        - run
-        - --
-        - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
-        - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
-        command:
-        - - ./hack/bazel.sh
+      - command:
+        - ./prow/scripts/validate-config.sh
         image: launcher.gcr.io/google/bazel:0.24.1
         name: "test-config"
         resources: {}
+        env:
+          - name: K8S_TEST_INFRA_PATH
+            value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+          - name: MY_PATH
+            value: "/home/prow/go/src/github.com/belitradas/test-infra"
 
 postsubmits:
   belitradas/test-infra:
@@ -41,7 +40,19 @@ postsubmits:
     decorate: true
     branches:             # Regexps, only run against these branches.
     - ^master$
+    extra_refs:
+    - base_ref: master
+      org: kubernetes
+      repo: test-infra
     spec:
       containers:
-      - image: alpine
-        command: ["/bin/printenv"]
+      - command:
+        - ./prow/scripts/validate-config.sh
+        image: launcher.gcr.io/google/bazel:0.24.1
+        name: "test-config"
+        resources: {}
+        env:
+          - name: K8S_TEST_INFRA_PATH
+            value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+          - name: MY_PATH
+            value: "/home/prow/go/src/github.com/belitradas/test-infra"
