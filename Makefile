@@ -1,5 +1,5 @@
 
-KUBECTL_VERSION ?= 1.14.0
+KUBECTL_VERSION ?= 1.14.2
 
 kubectl-build:
 	docker build ./dockerfiles/kubectl --build-arg KUBECTL_VERSION=$(KUBECTL_VERSION) -t belitre/kubectl:$(KUBECTL_VERSION)

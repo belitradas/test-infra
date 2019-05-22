@@ -9,65 +9,66 @@
       
 presubmits:
   belitradas/test-infra:
-  - name: test-prow-config
-    context: test-prow-config
-    decorate: true 
-    always_run: true 
-    skip_report: false 
-    max_concurrency: 1 
-    trigger: "(?m)test-prow-config( please)?" 
-    rerun_command: "test-prow-config"  
-    extra_refs:
-      - base_ref: master
-        org: kubernetes
-        repo: test-infra
-    spec: 
-      containers:
-        - name: "test-config"
-          command:
-            - ./prow/scripts/validate-config.sh
-          image: launcher.gcr.io/google/bazel:0.24.1
-          env:
-            - name: K8S_TEST_INFRA_PATH
-              value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-            - name: BELITRADAS_TEST_INFRA_PATH
-              value: "/home/prow/go/src/github.com/belitradas/test-infra"
-  - name: test-prow-manifests
-    context: test-prow-manifests
-    decorate: true 
-    always_run: false 
-    skip_report: true 
-    max_concurrency: 1 
-    trigger: "(?m)test-prow-manifests( please)?" 
-    rerun_command: "test-prow-manifests"  
-    spec: 
-      containers:
-        - name: "test-manifests"
-          command:
-            - make
-          args:
-            - deploy-prow-dry-run
-          image: belitre/kubectl:1.14.0
+    - name: test-prow-config
+      context: test-prow-config
+      decorate: true 
+      always_run: true 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)test-prow-config( please)?" 
+      rerun_command: "test-prow-config"  
+      extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: test-infra
+      spec: 
+        containers:
+          - name: "test-config"
+            command:
+              - ./prow/scripts/validate-config.sh
+            image: launcher.gcr.io/google/bazel:0.24.1
+            env:
+              - name: K8S_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+              - name: BELITRADAS_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+    - name: test-prow-manifests
+      context: test-prow-manifests
+      decorate: true 
+      always_run: true 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)test-prow-manifests( please)?" 
+      rerun_command: "test-prow-manifests"  
+      serviceAccount: prow
+      spec: 
+        containers:
+          - name: "test-manifests"
+            command:
+              - make
+            args:
+              - deploy-prow-dry-run
+            image: belitre/kubectl:1.14.2
 
 postsubmits:
   belitradas/test-infra:
-  - name: tests-postsubmit
-    decorate: true
-    branches:             # Regexps, only run against these branches.
-    - ^master$
-    extra_refs:
-    - base_ref: master
-      org: kubernetes
-      repo: test-infra
-    spec:
-      containers:
-      - command:
-        - ./prow/scripts/validate-config.sh
-        image: launcher.gcr.io/google/bazel:0.24.1
-        name: "test-config"
-        resources: {}
-        env:
-          - name: K8S_TEST_INFRA_PATH
-            value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-          - name: BELITRADAS_TEST_INFRA_PATH
-            value: "/home/prow/go/src/github.com/belitradas/test-infra"
+    - name: tests-postsubmit
+      decorate: true
+      branches:
+        - ^master$
+      extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: test-infra
+      spec:
+        containers:
+          - command:
+              - ./prow/scripts/validate-config.sh
+            image: launcher.gcr.io/google/bazel:0.24.1
+            name: "test-config"
+            resources: {}
+            env:
+              - name: K8S_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+              - name: BELITRADAS_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/belitradas/test-infra"
