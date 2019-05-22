@@ -40,6 +40,7 @@ presubmits:
       max_concurrency: 1 
       trigger: "(?m)test-prow-manifests( please)?" 
       rerun_command: "test-prow-manifests"  
+      serviceAccount: prow
       spec: 
         containers:
           - name: "test-manifests"
@@ -47,7 +48,7 @@ presubmits:
               - make
             args:
               - deploy-prow-dry-run
-            image: belitre/kubectl:1.14.0
+            image: belitre/kubectl:1.14.2
 
 postsubmits:
   belitradas/test-infra:
