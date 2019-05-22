@@ -1113,6 +1113,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: "crier"
+  namespace: default
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1148,6 +1149,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: crier
+  namespace: default
   labels:
     app: crier
 spec:
