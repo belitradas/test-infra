@@ -25,6 +25,9 @@ sinker:
   max_prowjob_age: 48h
   max_pod_age: 30m
 
+push_gateway:
+  endpoint: pushgateway
+
 tide:
   sync_period: 1m
   merge_method:
