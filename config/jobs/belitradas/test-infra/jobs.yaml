@@ -12,7 +12,7 @@ presubmits:
     - name: test-prow-config
       context: test-prow-config
       decorate: true 
-      always_run: true 
+      always_run: false 
       skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-config( please)?" 
@@ -36,7 +36,7 @@ presubmits:
     - name: test-prow-manifests
       context: test-prow-manifests
       decorate: true 
-      always_run: true 
+      always_run: false 
       skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-manifests( please)?" 
