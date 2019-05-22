@@ -298,6 +298,7 @@ spec:
         - --redirect-http-to=prow.coolcluster.belitre.com
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
+        - --oauth-url=/github-login
         - --spyglass=true
         ports:
           - name: http
@@ -308,6 +309,12 @@ spec:
           readOnly: true
         - name: job-config
           mountPath: /etc/job-config
+          readOnly: true
+        - name: oauth-config
+          mountPath: /etc/github
+          readOnly: true
+        - name: cookie-secret
+          mountPath: /etc/cookie
           readOnly: true
         livenessProbe:
           httpGet:
@@ -329,6 +336,12 @@ spec:
       - name: job-config
         configMap:
           name: job-config
+      - name: oauth-config
+        secret:
+            secretName: github-oauth-config
+      - name: cookie-secret
+        secret:
+            secretName: cookie
 ---
 apiVersion: v1
 kind: Service
