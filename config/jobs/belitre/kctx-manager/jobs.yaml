@@ -1,0 +1,43 @@
+presubmits:
+  belitre/kctx-manager:
+    - name: build
+      context: build
+      decorate: true 
+      always_run: true 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      spec: 
+        containers:
+          - name: "build"
+            command:
+              - make
+            args:
+              - bootstrap
+              - build-cross
+            image: golang:1.12.5
+            env:
+              - name: GO111MODULE
+                value: "on"
+   
+postsubmits:
+  belitre/kctx-manager:
+    - name: build
+      decorate: true
+      max_concurrency: 1 
+      branches:
+        - master
+      spec:
+        containers:
+          - name: "build"
+            command:
+              - make
+            args:
+              - bootstrap
+              - build-cross
+            image: golang:1.12.5
+            resources: {}
+            env:
+              - name: GO111MODULE
+                value: "on"
