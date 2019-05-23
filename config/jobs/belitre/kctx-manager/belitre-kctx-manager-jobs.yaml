@@ -17,7 +17,6 @@ presubmits:
               - test
               - build-cross
             image: belitre/gobuilder:1.12.5
-            imagePullPolicy: Always
    
 postsubmits:
   belitre/kctx-manager:
@@ -35,4 +34,3 @@ postsubmits:
               - test
               - build-cross
             image: belitre/gobuilder:1.12.5
-            imagePullPolicy: Always

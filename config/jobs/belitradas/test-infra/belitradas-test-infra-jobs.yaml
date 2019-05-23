@@ -1,22 +1,13 @@
-#periodics:
-#- interval: 10m
-#  name: echo-test
-#  decorate: true
-#  spec:
-#    containers:
-#    - image: alpine
-#      command: ["/bin/date"]
-
 presubmits:
   belitradas/test-infra:
-    - name: test-fast-config
-      context: test-fast-config
+    - name: test-prow-config
+      context: test-prow-config
       decorate: true 
       always_run: false 
       skip_report: true 
       max_concurrency: 1 
-      trigger: "(?m)test-fast-config( please)?" 
-      rerun_command: "test-fast-config"
+      trigger: "(?m)test-prow-config( please)?" 
+      rerun_command: "test-prow-config"
       run_if_changed: '^(config/.*|prow/.*)$'
       spec: 
         containers:
@@ -24,35 +15,10 @@ presubmits:
             command:
               - checkconfig
             args:
-              - --plugin-config=prow/config.yaml
-              - --config-path=prow/plugins.yaml
+              - --config-path=prow/config.yaml
+              - --plugin-config=prow/plugins.yaml
               - --job-config-path=config/jobs
             image: belitre/checkconfig:latest
-            imagePullPolicy: Always
-    - name: test-prow-config
-      context: test-prow-config
-      decorate: true 
-      always_run: false 
-      skip_report: false 
-      max_concurrency: 1 
-      trigger: "(?m)test-prow-config( please)?" 
-      rerun_command: "test-prow-config"
-      run_if_changed: '^(config/.*|prow/.*)$'
-      extra_refs:
-        - base_ref: master
-          org: kubernetes
-          repo: test-infra
-      spec: 
-        containers:
-          - name: "test-config"
-            command:
-              - ./prow/scripts/validate-config.sh
-            image: launcher.gcr.io/google/bazel:0.24.1
-            env:
-              - name: K8S_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-              - name: BELITRADAS_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/belitradas/test-infra"
     - name: test-prow-manifests
       context: test-prow-manifests
       decorate: true 
@@ -80,22 +46,16 @@ postsubmits:
       run_if_changed: '^(config/.*|prow/.*)$'
       branches:
         - master
-      extra_refs:
-        - base_ref: master
-          org: kubernetes
-          repo: test-infra
       spec:
         containers:
-          - command:
-              - ./prow/scripts/validate-config.sh
-            image: launcher.gcr.io/google/bazel:0.24.1
-            name: "test-config"
-            resources: {}
-            env:
-              - name: K8S_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-              - name: BELITRADAS_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+          - name: "test-config"
+            command:
+              - checkconfig
+            args:
+              - --config-path=prow/config.yaml
+              - --plugin-config=prow/plugins.yaml
+              - --job-config-path=config/jobs
+            image: belitre/checkconfig:latest
     - name: test-prow-manifests-postsubmit
       decorate: true 
       max_concurrency: 1 
