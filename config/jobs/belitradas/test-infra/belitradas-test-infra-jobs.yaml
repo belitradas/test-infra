@@ -18,21 +18,15 @@ presubmits:
       trigger: "(?m)test-prow-config( please)?" 
       rerun_command: "test-prow-config"
       run_if_changed: '^(config/.*|prow/.*)$'
-      extra_refs:
-        - base_ref: master
-          org: kubernetes
-          repo: test-infra
       spec: 
         containers:
           - name: "test-config"
-            command:
-              - ./prow/scripts/validate-config.sh
-            image: launcher.gcr.io/google/bazel:0.24.1
-            env:
-              - name: K8S_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-              - name: BELITRADAS_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+            args:
+              - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
+              - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
+              - --job-config-path=/home/prow/go/src/github.com/belitradas/test-infra/config/jobs
+            image: belitre/checkconfig:latest
+            imagePullPolicy: Always
     - name: test-prow-manifests
       context: test-prow-manifests
       decorate: true 
@@ -51,6 +45,7 @@ presubmits:
             args:
               - deploy-prow-dry-run
             image: belitre/kubectl:1.14.2
+            imagePullPolicy: Always
 
 postsubmits:
   belitradas/test-infra:
@@ -60,22 +55,15 @@ postsubmits:
       run_if_changed: '^(config/.*|prow/.*)$'
       branches:
         - master
-      extra_refs:
-        - base_ref: master
-          org: kubernetes
-          repo: test-infra
       spec:
         containers:
-          - command:
-              - ./prow/scripts/validate-config.sh
-            image: launcher.gcr.io/google/bazel:0.24.1
-            name: "test-config"
-            resources: {}
-            env:
-              - name: K8S_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
-              - name: BELITRADAS_TEST_INFRA_PATH
-                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+          - name: "test-config"
+            args:
+              - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
+              - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
+              - --job-config-path=/home/prow/go/src/github.com/belitradas/test-infra/config/jobs
+            image: belitre/checkconfig:latest
+            imagePullPolicy: Always
     - name: test-prow-manifests-postsubmit
       decorate: true 
       max_concurrency: 1 
@@ -91,3 +79,4 @@ postsubmits:
             args:
               - deploy-prow
             image: belitre/kubectl:1.14.2
+            imagePullPolicy: Always

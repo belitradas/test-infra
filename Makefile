@@ -25,3 +25,9 @@ deploy-prow-dry-run:
 
 deploy-prow:
 	./prow/scripts/apply-manifests.sh
+
+checkconfig-build:
+	docker build ./dockerfiles/checkconfig -t belitre/checkconfig:latest
+
+checkconfig-push:
+	docker push belitre/checkconfig:latest
