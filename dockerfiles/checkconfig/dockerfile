@@ -1,0 +1,11 @@
+FROM launcher.gcr.io/google/bazel:0.24.1 as builder
+
+RUN git clone https://github.com/kubernetes/test-infra /go/src/k8s.io/test-infra
+
+RUN cd /go/src/k8s.io/test-infra && bazel build //prow/cmd/checkconfig
+
+FROM alpine:3.9.4
+
+COPY --from=builder /go/src/k8s.io/test-infra/bazel-bin/prow/cmd/checkconfig/linux_amd64_pure_stripped/checkconfig /bin
+
+CMD ["checkconfig"]

@@ -14,8 +14,10 @@ presubmits:
             command:
               - make
             args:
+              - test
               - build-cross
             image: belitre/gobuilder:1.12.5
+            imagePullPolicy: Always
    
 postsubmits:
   belitre/kctx-manager:
@@ -30,6 +32,7 @@ postsubmits:
             command:
               - make
             args:
+              - test
               - build-cross
             image: belitre/gobuilder:1.12.5
-            resources: {}
+            imagePullPolicy: Always
