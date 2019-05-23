@@ -14,7 +14,6 @@ presubmits:
             command:
               - make
             args:
-              - bootstrap
               - build-cross
             image: belitre/gobuilder:1.12.5
    
@@ -31,7 +30,6 @@ postsubmits:
             command:
               - make
             args:
-              - bootstrap
               - build-cross
             image: belitre/gobuilder:1.12.5
             resources: {}
