@@ -21,6 +21,8 @@ presubmits:
       spec: 
         containers:
           - name: "test-config"
+            command:
+              - checkconfig
             args:
               - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
               - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
@@ -58,6 +60,8 @@ postsubmits:
       spec:
         containers:
           - name: "test-config"
+            command:
+              - checkconfig
             args:
               - --plugin-config=/home/prow/go/src/github.com/belitradas/test-infra/prow/config.yaml
               - --config-path=/home/prow/go/src/github.com/belitradas/test-infra/prow/plugins.yaml
