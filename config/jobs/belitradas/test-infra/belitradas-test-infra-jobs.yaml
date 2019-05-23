@@ -7,6 +7,71 @@
 #    - image: alpine
 #      command: ["/bin/date"]
 
+presubmits:
+  belitradas/test-infra:
+    - name: test-fast-config
+      context: test-fast-config
+      decorate: true 
+      always_run: false 
+      skip_report: true 
+      max_concurrency: 1 
+      trigger: "(?m)test-fast-config( please)?" 
+      rerun_command: "test-fast-config"
+      run_if_changed: '^(config/.*|prow/.*)$'
+      spec: 
+        containers:
+          - name: "test-config"
+            command:
+              - checkconfig
+            args:
+              - --plugin-config=prow/config.yaml
+              - --config-path=prow/plugins.yaml
+              - --job-config-path=config/jobs
+            image: belitre/checkconfig:latest
+            imagePullPolicy: Always
+    - name: test-prow-config
+      context: test-prow-config
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)test-prow-config( please)?" 
+      rerun_command: "test-prow-config"
+      run_if_changed: '^(config/.*|prow/.*)$'
+      extra_refs:
+        - base_ref: master
+          org: kubernetes
+          repo: test-infra
+      spec: 
+        containers:
+          - name: "test-config"
+            command:
+              - ./prow/scripts/validate-config.sh
+            image: launcher.gcr.io/google/bazel:0.24.1
+            env:
+              - name: K8S_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/kubernetes/test-infra"
+              - name: BELITRADAS_TEST_INFRA_PATH
+                value: "/home/prow/go/src/github.com/belitradas/test-infra"
+    - name: test-prow-manifests
+      context: test-prow-manifests
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)test-prow-manifests( please)?" 
+      rerun_command: "test-prow-manifests"
+      run_if_changed: 'prow/manifests/'
+      spec: 
+        serviceAccountName: prow
+        containers:
+          - name: "test-manifests"
+            command:
+              - make
+            args:
+              - deploy-prow-dry-run
+            image: belitre/kubectl:1.14.2
+
 postsubmits:
   belitradas/test-infra:
     - name: test-config-postsubmit
