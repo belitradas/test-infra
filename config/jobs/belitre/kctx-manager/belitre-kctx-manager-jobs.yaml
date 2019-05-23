@@ -16,10 +16,7 @@ presubmits:
             args:
               - bootstrap
               - build-cross
-            image: golang:1.12.5
-            env:
-              - name: GO111MODULE
-                value: "on"
+            image: belitre/gobuilder:1.12.5
    
 postsubmits:
   belitre/kctx-manager:
@@ -36,8 +33,5 @@ postsubmits:
             args:
               - bootstrap
               - build-cross
-            image: golang:1.12.5
+            image: belitre/gobuilder:1.12.5
             resources: {}
-            env:
-              - name: GO111MODULE
-                value: "on"
