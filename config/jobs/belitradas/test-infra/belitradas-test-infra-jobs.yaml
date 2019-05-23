@@ -4,7 +4,7 @@ presubmits:
       context: test-prow-config
       decorate: true 
       always_run: false 
-      skip_report: true 
+      skip_report: false 
       max_concurrency: 1 
       trigger: "(?m)test-prow-config( please)?" 
       rerun_command: "test-prow-config"
