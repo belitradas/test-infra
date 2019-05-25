@@ -1080,7 +1080,7 @@ spec:
         image: gcr.io/k8s-prow/ghproxy:v20190521-29b667418
         args:
         - --cache-dir=/cache
-        - --cache-sizeGB=49
+        - --cache-sizeGB=19
         - --push-gateway=pushgateway
         ports:
         - containerPort: 8888

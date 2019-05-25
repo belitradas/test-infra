@@ -50,7 +50,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 20Gi
   storageClassName: gce-ssd-retain
   # gce-ssd-retain is specified in prow/cluster/gce-ssd-retain_storageclass.yaml
   #
