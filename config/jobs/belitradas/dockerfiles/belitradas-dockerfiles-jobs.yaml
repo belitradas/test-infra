@@ -1,0 +1,62 @@
+presubmits:
+  belitradas/dockerfiles:
+    - name: build-checkconfig
+      context: build
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      run_if_changed: 'checkconfig/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=/home/prow/go/src/github.com/belitradas/dockerfiles/checkconfig/dockerfile
+              - --context=/home/prow/go/src/github.com/belitradas/dockerfiles
+              - --destination=belitre/checkconfig:test
+            volumeMounts:
+              - name: docker-config
+                mountPath: /kaniko/.docker
+        volumes:
+          - name: docker-config
+            projected:
+              sources:
+              - secret:
+                  name: belitre-docker-creds
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
+
+postsubmits:
+  belitradas/dockerfiles:
+    - name: build-checkconfig
+      decorate: true 
+      max_concurrency: 1 
+      run_if_changed: 'checkconfig/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=/home/prow/go/src/github.com/belitradas/dockerfiles/checkconfig/dockerfile
+              - --context=/home/prow/go/src/github.com/belitradas/dockerfiles
+              - --destination=belitre/checkconfig:test
+            volumeMounts:
+              - name: docker-config
+                mountPath: /kaniko/.docker
+        volumes:
+          - name: docker-config
+            projected:
+              sources:
+              - secret:
+                  name: belitre-docker-creds
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
