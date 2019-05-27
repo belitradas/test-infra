@@ -20,6 +20,7 @@ plank:
       path_strategy: "explicit"
     gcs_credentials_secret: gcs-credentials
 
+
 deck:
   spyglass:
     size_limit: 500000000 # 500MB
