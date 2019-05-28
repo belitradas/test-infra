@@ -210,7 +210,7 @@ postsubmits:
             args: 
               - --dockerfile=$(DOCKERFILE)
               - --context=$(CONTEXT)
-              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):$(PULL_BASE_SHA)
               - --destination=$(IMAGE_NAME):latest
     - name: build-fluentd-events-latest
       labels:
@@ -229,7 +229,7 @@ postsubmits:
             args: 
               - --dockerfile=$(DOCKERFILE)
               - --context=$(CONTEXT)
-              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):$(PULL_BASE_SHA)
               - --destination=$(IMAGE_NAME):latest
     - name: build-kubectl-latest
       labels:
@@ -248,7 +248,7 @@ postsubmits:
             args: 
               - --dockerfile=$(DOCKERFILE)
               - --context=$(CONTEXT)
-              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):$(PULL_BASE_SHA)
               - --destination=$(IMAGE_NAME):latest
     - name: build-gobuilder-latest
       labels:
@@ -267,5 +267,5 @@ postsubmits:
             args: 
               - --dockerfile=$(DOCKERFILE)
               - --context=$(CONTEXT)
-              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
-              - --destination=$(IMAGE_NAME):dev
+              - --destination=$(IMAGE_NAME):$(PULL_BASE_SHA)
+              - --destination=$(IMAGE_NAME):latest
