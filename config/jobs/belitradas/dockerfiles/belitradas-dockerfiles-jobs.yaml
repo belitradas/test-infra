@@ -1,7 +1,68 @@
+presets:
+- labels:
+    kaniko-belitre-dockerhub-creds: "true"
+  volumes:
+  - name: docker-config
+    projected:
+      sources:
+      - secret:
+          name: belitre-docker-creds
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+  volumeMounts:
+  - name: docker-config
+    mountPath: /kaniko/.docker
+- labels:
+    belitradas-dockerfiles-context: "true"
+  env:
+  - name: CONTEXT
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles 
+- labels:
+    belitradas-dockerfiles-checkconfig: "true"
+  env:
+  - name: DOCKERFILE
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/checkconfig/Dockerfile
+  - name: IMAGE_NAME
+    value: belitre/checkconfig
+- labels:
+    belitradas-dockerfiles-curator: "true"
+  env:
+  - name: DOCKERFILE
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/curator/Dockerfile
+  - name: CONTEXT
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/curator
+  - name: IMAGE_NAME
+    value: belitre/curator
+- labels:
+    belitradas-dockerfiles-fluentd-events: "true"
+  env:
+  - name: DOCKERFILE
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/fluentd-events/Dockerfile
+  - name: IMAGE_NAME
+    value: belitre/fluentd-events
+- labels:
+    belitradas-dockerfiles-kubectl: "true"
+  env:
+  - name: DOCKERFILE
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/kubectl/Dockerfile
+  - name: IMAGE_NAME
+    value: belitre/kubectl
+- labels:
+    belitradas-dockerfiles-gobuilder: "true"
+  env:
+  - name: DOCKERFILE
+    value: /home/prow/go/src/github.com/belitradas/dockerfiles/gobuilder/Dockerfile
+  - name: IMAGE_NAME
+    value: belitre/gobuilder
+
 presubmits:
   belitradas/dockerfiles:
     - name: build-checkconfig
-      context: build
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-checkconfig: "true"
       decorate: true 
       always_run: false 
       skip_report: false 
@@ -16,25 +77,109 @@ presubmits:
             command:
               - /kaniko/executor
             args: 
-              - --dockerfile=/home/prow/go/src/github.com/belitradas/dockerfiles/checkconfig/dockerfile
-              - --context=/home/prow/go/src/github.com/belitradas/dockerfiles
-              - --destination=belitre/checkconfig:test
-            volumeMounts:
-              - name: docker-config
-                mountPath: /kaniko/.docker
-        volumes:
-          - name: docker-config
-            projected:
-              sources:
-              - secret:
-                  name: belitre-docker-creds
-                  items:
-                    - key: .dockerconfigjson
-                      path: config.json
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
+    - name: build-curator
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-curator: "true"
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      run_if_changed: 'curator/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
+    - name: build-fluentd-events
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-fluentd-events: "true"
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      run_if_changed: 'fluentd-events/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
+    - name: build-kubectl
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-kubectl: "true"
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      run_if_changed: 'kubectl/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
+    - name: build-gobuilder
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-gobuilder: "true"
+      decorate: true 
+      always_run: false 
+      skip_report: false 
+      max_concurrency: 1 
+      trigger: "(?m)build( please)?" 
+      rerun_command: "build"
+      run_if_changed: 'gobuilder/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
 
 postsubmits:
   belitradas/dockerfiles:
-    - name: build-checkconfig
+    - name: build-checkconfig-latest
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-checkconfig: "true"
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'checkconfig/'
@@ -45,18 +190,82 @@ postsubmits:
             command:
               - /kaniko/executor
             args: 
-              - --dockerfile=/home/prow/go/src/github.com/belitradas/dockerfiles/checkconfig/dockerfile
-              - --context=/home/prow/go/src/github.com/belitradas/dockerfiles
-              - --destination=belitre/checkconfig:test
-            volumeMounts:
-              - name: docker-config
-                mountPath: /kaniko/.docker
-        volumes:
-          - name: docker-config
-            projected:
-              sources:
-              - secret:
-                  name: belitre-docker-creds
-                  items:
-                    - key: .dockerconfigjson
-                      path: config.json
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_BASE_SHA)
+              - --destination=$(IMAGE_NAME):latest
+    - name: build-curator-latest
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-curator: "true"
+      decorate: true 
+      max_concurrency: 1 
+      run_if_changed: 'curator/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):latest
+    - name: build-fluentd-events-latest
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-fluentd-events: "true"
+      decorate: true 
+      max_concurrency: 1 
+      run_if_changed: 'fluentd-events/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):latest
+    - name: build-kubectl-latest
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-kubectl: "true"
+      decorate: true 
+      max_concurrency: 1 
+      run_if_changed: 'kubectl/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):latest
+    - name: build-gobuilder-latest
+      labels:
+        kaniko-belitre-dockerhub-creds: "true"
+        belitradas-dockerfiles-context: "true"
+        belitradas-dockerfiles-gobuilder: "true"
+      decorate: true 
+      max_concurrency: 1 
+      run_if_changed: 'gobuilder/'
+      spec: 
+        containers:
+          - name: "kaniko"
+            image: gcr.io/kaniko-project/executor:latest
+            command:
+              - /kaniko/executor
+            args: 
+              - --dockerfile=$(DOCKERFILE)
+              - --context=$(CONTEXT)
+              - --destination=$(IMAGE_NAME):$(PULL_PULL_SHA)
+              - --destination=$(IMAGE_NAME):dev
