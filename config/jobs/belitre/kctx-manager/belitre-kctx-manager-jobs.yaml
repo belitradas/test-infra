@@ -16,7 +16,7 @@ presubmits:
             args:
               - test
               - build-cross
-            image: belitre/gobuilder:1.12.5
+            image: belitre/gobuilder:latest
    
 postsubmits:
   belitre/kctx-manager:
@@ -33,4 +33,4 @@ postsubmits:
             args:
               - test
               - build-cross
-            image: belitre/gobuilder:1.12.5
+            image: belitre/gobuilder:latest

@@ -36,7 +36,7 @@ presubmits:
               - make
             args:
               - deploy-prow-dry-run
-            image: belitre/kubectl:1.14.2
+            image: belitre/kubectl:latest
 
 postsubmits:
   belitradas/test-infra:
@@ -70,4 +70,4 @@ postsubmits:
               - make
             args:
               - deploy-prow
-            image: belitre/kubectl:1.14.2
+            image: belitre/kubectl:latest
