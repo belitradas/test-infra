@@ -183,6 +183,8 @@ postsubmits:
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'checkconfig/'
+      branches:
+        - master
       spec: 
         containers:
           - name: "kaniko"
@@ -201,6 +203,8 @@ postsubmits:
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'curator/'
+      branches:
+        - master
       spec: 
         containers:
           - name: "kaniko"
@@ -220,6 +224,8 @@ postsubmits:
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'fluentd-events/'
+      branches:
+        - master
       spec: 
         containers:
           - name: "kaniko"
@@ -239,6 +245,8 @@ postsubmits:
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'kubectl/'
+      branches:
+        - master
       spec: 
         containers:
           - name: "kaniko"
@@ -258,6 +266,8 @@ postsubmits:
       decorate: true 
       max_concurrency: 1 
       run_if_changed: 'gobuilder/'
+      branches:
+        - master
       spec: 
         containers:
           - name: "kaniko"

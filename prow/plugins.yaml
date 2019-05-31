@@ -48,6 +48,8 @@ plugins:
 
 config_updater:
   maps:
+    prow/labels.yaml:
+      name: label-config
     prow/config.yaml:
       name: config
     prow/plugins.yaml:
