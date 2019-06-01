@@ -1,3 +1,26 @@
+periodics:
+  - name: kctx-release
+    cron: "0 20 * * *"
+    decorate: true
+    extra_refs:
+    - org: belitre
+      repo: kctx-manager
+      base_ref: master
+    spec: 
+      containers:
+        - name: "release"
+          imagePullPolicy: Always
+          command:
+            - make
+          args:
+            - semantic-release
+          image: belitre/gobuilder:latest
+          env:
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: oauth
 presubmits:
   belitre/kctx-manager:
     - name: build
@@ -11,6 +34,7 @@ presubmits:
       spec: 
         containers:
           - name: "build"
+            imagePullPolicy: Always
             command:
               - make
             args:
@@ -28,6 +52,7 @@ postsubmits:
       spec:
         containers:
           - name: "build"
+            imagePullPolicy: Always
             command:
               - make
             args:
