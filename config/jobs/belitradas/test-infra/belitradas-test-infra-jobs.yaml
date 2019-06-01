@@ -12,6 +12,7 @@ presubmits:
       spec: 
         containers:
           - name: "test-config"
+            imagePullPolicy: Always
             command:
               - checkconfig
             args:
@@ -32,6 +33,7 @@ presubmits:
         serviceAccountName: prow
         containers:
           - name: "test-manifests"
+            imagePullPolicy: Always
             command:
               - make
             args:
@@ -49,6 +51,7 @@ postsubmits:
       spec:
         containers:
           - name: "test-config"
+            imagePullPolicy: Always
             command:
               - checkconfig
             args:
@@ -66,6 +69,7 @@ postsubmits:
         serviceAccountName: prow
         containers:
           - name: "test-manifests"
+            imagePullPolicy: Always
             command:
               - make
             args:
