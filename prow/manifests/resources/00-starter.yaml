@@ -98,7 +98,7 @@ metadata:
   labels:
     app: hook
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
