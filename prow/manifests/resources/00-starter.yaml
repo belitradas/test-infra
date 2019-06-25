@@ -124,7 +124,7 @@ spec:
         ports:
           - name: http
             containerPort: 8888
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: hmac
@@ -181,9 +181,9 @@ spec:
   selector:
     app: hook
   ports:
-  - name: http-hook
+  - name: http
     port: 8888
-  - name: http-metrics
+  - name: metrics
     port: 9090
   type: ClusterIP
 ---
@@ -215,7 +215,7 @@ spec:
 #        - --github-endpoint=https://api.github.com
         - --job-config-path=/etc/job-config
         ports:
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: oauth
@@ -237,6 +237,19 @@ spec:
       - name: job-config
         configMap:
           name: job-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: plank
+spec:
+  selector:
+    app: plank
+  ports:
+  - name: metrics
+    port: 9090
+  type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -261,7 +274,7 @@ spec:
         - --job-config-path=/etc/job-config
         - --dry-run=false
         ports:
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: config
@@ -314,7 +327,7 @@ spec:
         ports:
           - name: http
             containerPort: 8080
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: config
@@ -365,10 +378,10 @@ spec:
   selector:
     app: deck
   ports:
-  - name: http-deck
+  - name: http
     port: 80
     targetPort: 8080
-  - name: http-metrics
+  - name: metrics
     port: 9090
   type: ClusterIP
 ---
@@ -445,7 +458,7 @@ spec:
         ports:
           - name: http
             containerPort: 8888
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: oauth
@@ -484,10 +497,10 @@ spec:
     app: tide
   ports:
   - port: 80
-    name: http-tide
+    name: http
     targetPort: 8888
   - port: 9090
-    name: http-metrics
+    name: metrics
   type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
@@ -924,7 +937,7 @@ spec:
     app: needs-rebase
   ports:
   - port: 80
-    name: http-needs-rebase
+    name: http
     targetPort: 8888
   type: ClusterIP
 ---
@@ -945,7 +958,7 @@ spec:
 #        spec:
 #          containers:
 #          - name: branchprotector
-#            image: gcr.io/k8s-prow/branchprotector:v20190521-29b667418
+#            image: gcr.io/k8s-prow/branchprotector:v20190625-9f02db3fe
 #            args:
 #            - --config-path=/etc/config/config.yaml
 #            - --job-config-path=/etc/job-config
@@ -1005,7 +1018,7 @@ metadata:
     app: pushgateway
 spec:
   ports:
-  - name: http-pushgateway
+  - name: http
     port: 80
     targetPort: http
   type: ClusterIP
@@ -1076,7 +1089,7 @@ metadata:
     app: pushgateway-external
 spec:
   ports:
-  - name: http-pushgateway-external
+  - name: http
     port: 80
     targetPort: http
   type: ClusterIP
@@ -1099,7 +1112,7 @@ spec:
     spec:
       containers:
       - name: ghproxy
-        image: gcr.io/k8s-prow/ghproxy:v20190521-29b667418
+        image: gcr.io/k8s-prow/ghproxy:v20190625-9f02db3fe
         args:
         - --cache-dir=/cache
         - --cache-sizeGB=19
@@ -1126,11 +1139,11 @@ metadata:
   name: ghproxy
 spec:
   ports:
-  - name: http-ghproxy
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 8888
-  - name: http-metrics
+  - name: metrics
     port: 9090
   selector:
     app: ghproxy
@@ -1190,7 +1203,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: crier
-        image: gcr.io/k8s-prow/crier:v20190521-29b667418
+        image: gcr.io/k8s-prow/crier:v20190625-9f02db3fe
         args:
         - --github-workers=1
 #        - --report-agent=knative-build
@@ -1258,127 +1271,13 @@ spec:
             configMap:
               name: label-config
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: deck
-  name: deck
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: deck
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: ghproxy
-  name: ghproxy
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: ghproxy
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: hook
-  name: hook
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: hook
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: plank
-  name: plank
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: plank
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: sinker
-  name: sinker
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: sinker
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: tide
-  name: tide
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: tide
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: wee-nginx
   name: prow
   namespace: default
 spec:

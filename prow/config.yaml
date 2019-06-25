@@ -39,6 +39,7 @@ sinker:
 
 push_gateway:
   endpoint: pushgateway
+  serve_metrics: true
 
 tide:
   sync_period: 1m
