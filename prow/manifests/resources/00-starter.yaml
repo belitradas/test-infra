@@ -114,7 +114,7 @@ spec:
       containers:
       - name: hook
         image: gcr.io/k8s-prow/hook:v20190625-9f02db3fe
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
@@ -885,7 +885,7 @@ spec:
       containers:
       - name: needs-rebase
         image: gcr.io/k8s-prow/needs-rebase:v20190517-95ef25d87
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy

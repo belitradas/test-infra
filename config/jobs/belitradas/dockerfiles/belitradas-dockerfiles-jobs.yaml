@@ -74,7 +74,7 @@ presubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -97,7 +97,7 @@ presubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -121,7 +121,7 @@ presubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -145,7 +145,7 @@ presubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -169,7 +169,7 @@ presubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -194,7 +194,7 @@ postsubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -215,7 +215,7 @@ postsubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -237,7 +237,7 @@ postsubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -259,7 +259,7 @@ postsubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 
@@ -281,7 +281,7 @@ postsubmits:
         containers:
           - name: "kaniko"
             image: gcr.io/kaniko-project/executor:latest
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - /kaniko/executor
             args: 

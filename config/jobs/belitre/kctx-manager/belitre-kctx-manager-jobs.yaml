@@ -9,7 +9,7 @@ periodics:
     spec: 
       containers:
         - name: "release"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           command:
             - make
           args:
@@ -34,7 +34,7 @@ presubmits:
       spec: 
         containers:
           - name: "build"
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - make
             args:
@@ -52,7 +52,7 @@ postsubmits:
       spec:
         containers:
           - name: "build"
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
               - make
             args:
