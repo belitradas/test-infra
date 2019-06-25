@@ -114,7 +114,7 @@ spec:
       containers:
       - name: hook
         image: gcr.io/k8s-prow/hook:v20190625-9f02db3fe
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         args:
         - --dry-run=false
         - --config-path=/etc/config/config.yaml
@@ -122,7 +122,7 @@ spec:
 #        - --github-endpoint=https://api.github.com
         - --job-config-path=/etc/job-config
         ports:
-          - name: http
+          - name: http-hook
             containerPort: 8888
           - name: http-metrics
             containerPort: 9090
@@ -312,7 +312,7 @@ spec:
         - --oauth-url=/github-login
         - --spyglass=true
         ports:
-          - name: http
+          - name: http-deck
             containerPort: 8080
           - name: http-metrics
             containerPort: 9090
@@ -443,7 +443,7 @@ spec:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
         ports:
-          - name: http
+          - name: http-tide
             containerPort: 8888
           - name: http-metrics
             containerPort: 9090
@@ -885,13 +885,13 @@ spec:
       containers:
       - name: needs-rebase
         image: gcr.io/k8s-prow/needs-rebase:v20190517-95ef25d87
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
 #        - --github-endpoint=https://api.github.com
         ports:
-          - name: http
+          - name: http-rebase
             containerPort: 8888
         volumeMounts:
         - name: hmac
@@ -924,7 +924,7 @@ spec:
     app: needs-rebase
   ports:
   - port: 80
-    name: http-needs-rebase
+    name: http-rebase
     targetPort: 8888
   type: ClusterIP
 ---
@@ -945,7 +945,7 @@ spec:
 #        spec:
 #          containers:
 #          - name: branchprotector
-#            image: gcr.io/k8s-prow/branchprotector:v20190521-29b667418
+#            image: gcr.io/k8s-prow/branchprotector:v20190625-9f02db3fe
 #            args:
 #            - --config-path=/etc/config/config.yaml
 #            - --job-config-path=/etc/job-config
@@ -993,7 +993,7 @@ spec:
       - name: pushgateway
         image: prom/pushgateway:v0.4.0
         ports:
-          - name: http
+          - name: http-gateway
             containerPort: 9091
 ---
 apiVersion: v1
@@ -1007,7 +1007,7 @@ spec:
   ports:
   - name: http-pushgateway
     port: 80
-    targetPort: http
+    targetPort: http-gateway
   type: ClusterIP
   selector:
     app: pushgateway
@@ -1056,7 +1056,7 @@ spec:
       containers:
       - name: nginx
         ports:
-          - name: http
+          - name: http-proxy
             containerPort: 8081
         image: nginx:1
         volumeMounts:
@@ -1078,7 +1078,7 @@ spec:
   ports:
   - name: http-pushgateway-external
     port: 80
-    targetPort: http
+    targetPort: http-proxy
   type: ClusterIP
   selector:
     app: pushgateway-proxy
@@ -1099,7 +1099,7 @@ spec:
     spec:
       containers:
       - name: ghproxy
-        image: gcr.io/k8s-prow/ghproxy:v20190521-29b667418
+        image: gcr.io/k8s-prow/ghproxy:v20190625-9f02db3fe
         args:
         - --cache-dir=/cache
         - --cache-sizeGB=19
@@ -1190,7 +1190,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: crier
-        image: gcr.io/k8s-prow/crier:v20190521-29b667418
+        image: gcr.io/k8s-prow/crier:v20190625-9f02db3fe
         args:
         - --github-workers=1
 #        - --report-agent=knative-build
@@ -1378,7 +1378,7 @@ metadata:
   annotations:
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: wee-nginx
   name: prow
   namespace: default
 spec:
