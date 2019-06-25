@@ -122,9 +122,9 @@ spec:
 #        - --github-endpoint=https://api.github.com
         - --job-config-path=/etc/job-config
         ports:
-          - name: http-hook
+          - name: http
             containerPort: 8888
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: hmac
@@ -181,9 +181,9 @@ spec:
   selector:
     app: hook
   ports:
-  - name: http-hook
+  - name: http
     port: 8888
-  - name: http-metrics
+  - name: metrics
     port: 9090
   type: ClusterIP
 ---
@@ -215,7 +215,7 @@ spec:
 #        - --github-endpoint=https://api.github.com
         - --job-config-path=/etc/job-config
         ports:
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: oauth
@@ -237,6 +237,19 @@ spec:
       - name: job-config
         configMap:
           name: job-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: plank
+spec:
+  selector:
+    app: plank
+  ports:
+  - name: metrics
+    port: 9090
+  type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -261,7 +274,7 @@ spec:
         - --job-config-path=/etc/job-config
         - --dry-run=false
         ports:
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: config
@@ -312,9 +325,9 @@ spec:
         - --oauth-url=/github-login
         - --spyglass=true
         ports:
-          - name: http-deck
+          - name: http
             containerPort: 8080
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: config
@@ -365,10 +378,10 @@ spec:
   selector:
     app: deck
   ports:
-  - name: http-deck
+  - name: http
     port: 80
     targetPort: 8080
-  - name: http-metrics
+  - name: metrics
     port: 9090
   type: ClusterIP
 ---
@@ -443,9 +456,9 @@ spec:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
         ports:
-          - name: http-tide
+          - name: http
             containerPort: 8888
-          - name: http-metrics
+          - name: metrics
             containerPort: 9090
         volumeMounts:
         - name: oauth
@@ -484,10 +497,10 @@ spec:
     app: tide
   ports:
   - port: 80
-    name: http-tide
+    name: http
     targetPort: 8888
   - port: 9090
-    name: http-metrics
+    name: metrics
   type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
@@ -891,7 +904,7 @@ spec:
         - --github-endpoint=http://ghproxy
 #        - --github-endpoint=https://api.github.com
         ports:
-          - name: http-rebase
+          - name: http
             containerPort: 8888
         volumeMounts:
         - name: hmac
@@ -924,7 +937,7 @@ spec:
     app: needs-rebase
   ports:
   - port: 80
-    name: http-rebase
+    name: http
     targetPort: 8888
   type: ClusterIP
 ---
@@ -993,7 +1006,7 @@ spec:
       - name: pushgateway
         image: prom/pushgateway:v0.4.0
         ports:
-          - name: http-gateway
+          - name: http
             containerPort: 9091
 ---
 apiVersion: v1
@@ -1005,9 +1018,9 @@ metadata:
     app: pushgateway
 spec:
   ports:
-  - name: http-pushgateway
+  - name: http
     port: 80
-    targetPort: http-gateway
+    targetPort: http
   type: ClusterIP
   selector:
     app: pushgateway
@@ -1056,7 +1069,7 @@ spec:
       containers:
       - name: nginx
         ports:
-          - name: http-proxy
+          - name: http
             containerPort: 8081
         image: nginx:1
         volumeMounts:
@@ -1076,9 +1089,9 @@ metadata:
     app: pushgateway-external
 spec:
   ports:
-  - name: http-pushgateway-external
+  - name: http
     port: 80
-    targetPort: http-proxy
+    targetPort: http
   type: ClusterIP
   selector:
     app: pushgateway-proxy
@@ -1126,11 +1139,11 @@ metadata:
   name: ghproxy
 spec:
   ports:
-  - name: http-ghproxy
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 8888
-  - name: http-metrics
+  - name: metrics
     port: 9090
   selector:
     app: ghproxy
@@ -1257,120 +1270,6 @@ spec:
           - name: config
             configMap:
               name: label-config
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: deck
-  name: deck
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: deck
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: ghproxy
-  name: ghproxy
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: ghproxy
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: hook
-  name: hook
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: hook
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: plank
-  name: plank
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: plank
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: sinker
-  name: sinker
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: sinker
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app: tide
-  name: tide
-  namespace: monitoring
-spec:
-  endpoints:
-    - interval: 30s
-      port: http-metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      app: tide
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
