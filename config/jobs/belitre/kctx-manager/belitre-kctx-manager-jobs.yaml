@@ -59,3 +59,4 @@ postsubmits:
               - test
               - build-cross
             image: belitre/gobuilder:latest
+
